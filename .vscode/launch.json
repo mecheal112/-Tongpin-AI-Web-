@@ -1,0 +1,70 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "后端：同频 API 服务",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/server/src/index.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "restart": true,
+      "envFile": "${workspaceFolder}/.env",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": {
+        "group": "同频",
+        "order": 1
+      }
+    },
+    {
+      "name": "前端：Vue 开发服务器",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--workspace", "web", "run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": {
+        "group": "同频",
+        "order": 2
+      }
+    },
+    {
+      "name": "浏览器：打开同频",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/web/src",
+      "presentation": {
+        "group": "同频",
+        "order": 3
+      }
+    },
+    {
+      "name": "全栈：一键启动（后端 + 前端）",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "presentation": {
+        "group": "同频",
+        "order": 0
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "同频：后端 + 前端",
+      "configurations": ["后端：同频 API 服务", "前端：Vue 开发服务器"],
+      "stopAll": true,
+      "presentation": {
+        "group": "同频",
+        "order": 0
+      }
+    }
+  ]
+}

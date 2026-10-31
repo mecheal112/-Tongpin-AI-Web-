@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS interest_weight_log (
 | 资料 | 修改简介保存成功后（`user-service.js`） | +10 | `source_type=profile` |
 | 入组 | 加入同频局成功后（`groups.js`） | +5 | `source_type=group`，弱信号 |
 
-- **涨跌**：新证据累加 delta（同源同节点 24h 内只计一次）；**衰减**：每连续 30 天无新证据 weight ×0.9（惰性计算：读写该用户图谱时按 `updated_at` 折算，不跑定时任务），下限 5，记 `reason=decay` 的 weight_log；
+- **涨跌**：实际 delta = 接入点基准 ×（抽取强度 / 15），clamp 到 [3, 1.5×基准]（抽取强度即 §4.1 的 `delta` 字段 0-30，缺省 15）；同源同节点 24h 内只计一次；**衰减**：每连续 30 天无新证据 weight ×0.9（惰性计算：读写该用户图谱时按 `updated_at` 折算，不跑定时任务），下限 5，记 `reason=decay` 的 weight_log；
 - weight 上限 100；`user_interests.evidence` 每 (user, node) 最多 8 条 FIFO。
 
 ### 4.5 同步策略
