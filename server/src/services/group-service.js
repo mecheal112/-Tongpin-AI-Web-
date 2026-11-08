@@ -1,4 +1,4 @@
-import { run, get, all } from '../db/index.js';
+import { run, get, all, tx } from '../db/index.js';
 import { newId, now } from '../utils/helpers.js';
 import { extractAndApply } from '../ai/interest-graph.js';
 
@@ -147,22 +147,34 @@ export function decideRequest(groupId, userId, approved) {
   const req = get('SELECT * FROM group_join_requests WHERE group_id = ? AND user_id = ?', groupId, userId);
   if (!req || req.status !== 'pending') return { ok: false, error: 'no-request' };
 
-  const ts = now();
-  run(
-    'UPDATE group_join_requests SET status = ?, handled_at = ? WHERE id = ?',
-    approved ? 'approved' : 'rejected', ts, req.id,
-  );
-
+  // 通过前复查容量：申请是排队进入的，发起人审批时可能已招满
   if (approved) {
-    if (!isMember(groupId, userId)) {
-      run(
-        'INSERT INTO group_members (group_id,user_id,role,joined_at) VALUES (?,?,?,?)',
-        groupId, userId, 'member', ts,
-      );
+    const g = get('SELECT capacity FROM groups WHERE id = ?', groupId);
+    const count = get('SELECT COUNT(*) AS n FROM group_members WHERE group_id = ?', groupId).n;
+    if (g && count >= g.capacity) return { ok: false, error: 'full' };
+  }
+
+  const ts = now();
+  // 审批 + 入群 + 系统消息必须原子完成，否则成员列表与群聊会撕裂
+  tx(() => {
+    run(
+      'UPDATE group_join_requests SET status = ?, handled_at = ? WHERE id = ?',
+      approved ? 'approved' : 'rejected', ts, req.id,
+    );
+    if (approved) {
+      if (!isMember(groupId, userId)) {
+        run(
+          'INSERT INTO group_members (group_id,user_id,role,joined_at) VALUES (?,?,?,?)',
+          groupId, userId, 'member', ts,
+        );
+      }
+      const user = get('SELECT nickname FROM users WHERE id = ?', userId);
+      postSystemMessage(groupId, `${user?.nickname || '新成员'} 加入了小组`);
     }
-    const user = get('SELECT nickname FROM users WHERE id = ?', userId);
-    postSystemMessage(groupId, `${user?.nickname || '新成员'} 加入了小组`);
-    // 兴趣图谱：入组是弱兴趣信号（异步入图，失败不影响审批）
+  });
+
+  // 兴趣图谱：入组是弱兴趣信号（异步入图，失败不影响审批，故不放进事务）
+  if (approved) {
     const g = get('SELECT title, category, description FROM groups WHERE id = ?', groupId);
     if (g) {
       extractAndApply(userId, {

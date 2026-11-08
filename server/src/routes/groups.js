@@ -318,7 +318,10 @@ router.post(
 
     const targetId = req.params.userId;
     const result = decideRequest(group.id, targetId, approved);
-    if (!result.ok) throw notFound('没有待处理的申请');
+    if (!result.ok) {
+      if (result.error === 'full') throw badRequest('小组人数已满');
+      throw notFound('没有待处理的申请');
+    }
 
     const me = get('SELECT nickname FROM users WHERE id = ?', req.user.id);
     const applicant = get('SELECT nickname FROM users WHERE id = ?', targetId);
