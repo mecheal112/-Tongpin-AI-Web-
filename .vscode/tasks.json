@@ -1,0 +1,61 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "安装依赖",
+      "type": "shell",
+      "command": "npm install",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": { "group": "同频", "order": 1 }
+    },
+    {
+      "label": "初始化种子数据",
+      "detail": "清空数据库并重建 23 位体验用户、动态与同频局",
+      "type": "shell",
+      "command": "npm run reset",
+      "problemMatcher": [],
+      "presentation": { "group": "同频", "order": 2 }
+    },
+    {
+      "label": "补充种子数据",
+      "detail": "仅在数据库为空时灌入数据，不清空已有内容",
+      "type": "shell",
+      "command": "npm run seed",
+      "problemMatcher": [],
+      "presentation": { "group": "同频", "order": 3 }
+    },
+    {
+      "label": "构建前端产物",
+      "detail": "类型检查 + 打包到 web/dist，构建后后端会直接托管",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "presentation": { "group": "同频", "order": 4 }
+    },
+    {
+      "label": "前端类型检查",
+      "type": "shell",
+      "command": "npm run typecheck",
+      "problemMatcher": ["$tsc"],
+      "presentation": { "group": "同频", "order": 5 }
+    },
+    {
+      "label": "启动后端",
+      "type": "shell",
+      "command": "npm run dev:server",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "同频", "order": 6 }
+    },
+    {
+      "label": "启动前端",
+      "type": "shell",
+      "command": "npm run dev:web",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "同频", "order": 7 }
+    }
+  ]
+}

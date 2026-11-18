@@ -1,0 +1,35 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/data/*.db": true,
+    "**/data/*.db-wal": true,
+    "**/data/*.db-shm": true,
+    "**/package-lock.json": true
+  },
+  "files.exclude": {
+    "**/data/*.db-wal": true,
+    "**/data/*.db-shm": true
+  },
+  "files.associations": {
+    "*.vue": "vue"
+  },
+  "editor.formatOnSave": false,
+  "editor.tabSize": 2,
+  "editor.rulers": [110],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "eslint.validate": ["javascript", "typescript", "vue"],
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "terminal.integrated.cwd": "${workspaceFolder}"
+}
