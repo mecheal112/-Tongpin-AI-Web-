@@ -22,6 +22,7 @@ export const router = createRouter({
     { path: '/profile', name: 'profile', component: () => import('./views/ProfileView.vue') },
     { path: '/user/:id', name: 'user', component: () => import('./views/UserView.vue') },
     { path: '/admin', name: 'admin', component: () => import('./views/AdminView.vue') },
+    { path: '/assistant', name: 'assistant', component: () => import('./views/AssistantView.vue') },
     { path: '/help', name: 'help', component: () => import('./views/HelpView.vue'), meta: { public: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

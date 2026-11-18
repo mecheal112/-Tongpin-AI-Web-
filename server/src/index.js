@@ -24,6 +24,7 @@ import { router as groupsRouter } from './routes/groups.js';
 import { router as notifRouter } from './routes/notifications.js';
 import { router as adminRouter } from './routes/admin.js';
 import { router as graphRouter } from './routes/graph.js';
+import { router as assistantRouter } from './routes/assistant.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -74,6 +75,7 @@ app.use('/api/groups', groupsRouter);
 app.use('/api/notifications', notifRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/graph', graphRouter);
+app.use('/api/assistant', assistantRouter);
 
 /* ---------------- 静态前端（生产） ---------------- */
 

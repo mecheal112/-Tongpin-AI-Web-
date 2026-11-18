@@ -180,6 +180,13 @@ export const notifApi = {
     api.post<{ ok: true; unread: number; chat: number }>('/notifications/read', { ids }),
 };
 
+export const assistantApi = {
+  ask: (question: string, sessionId?: string) =>
+    api.post<import('./types').AssistantAskResult>('/assistant/ask', { question, sessionId }),
+  history: () => api.get<{ ok: true; messages: import('./types').AssistantMessage[] }>('/assistant/history'),
+  reset: () => api.post<{ ok: true }>('/assistant/reset'),
+};
+
 export const adminApi = {
   stats: () => api.get<any>('/admin/stats'),
   aiLogs: () => api.get<any>('/admin/ai-logs'),

@@ -29,6 +29,7 @@ const NAV = [
   { name: 'chat', to: '/chat', label: '消息', ico: '💬' },
   { name: 'community', to: '/community', label: '社区', ico: '🌱' },
   { name: 'groups', to: '/groups', label: '同频局', ico: '👥' },
+  { name: 'assistant', to: '/assistant', label: '助手', ico: '🤖' },
 ];
 
 const MOBILE_NAV = ['home', 'match', 'chat', 'community', 'groups'];

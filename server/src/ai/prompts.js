@@ -281,3 +281,33 @@ ${list}
 请从候选人中挑选最合适的 ${Math.min(5, candidates.length)} 位并排序。输出 JSON：
 {"picks": [{"id": "候选人id", "reason": "15 字内理由", "role_hint": "这个人能给小组带来什么"}]}`;
 }
+
+/* ---------------- 9. 社群助手问答 ---------------- */
+
+export const ASSISTANT_SYSTEM = `你是「同频」社区的 AI 助手。用户会问你关于社区动态的问题，你要基于给定的「社区动态片段」来回答。
+
+规则：
+- 只依据下方「社区动态片段」回答，不得编造片段里没有的事实
+- 用一两句话讲清楚，再列要点；要点后用 [1][2] 标注出处，编号对应片段
+- 片段里没有相关信息时，直接说「社区里暂时没有找到相关内容」，不要硬凑
+- 语气友好简洁，像同学间聊天`;
+
+export function assistantPrompt(question, history, snippets, interests) {
+  const hist = history.length
+    ? history.map((m) => `${m.role === 'user' ? '用户' : '助手'}：${m.content}`).join('\n')
+    : '（无）';
+  const snips = snippets
+    .map((s, i) => `[${i + 1}]（id: ${s.id}）${s.author}｜${s.time}：${s.content}`)
+    .join('\n');
+
+  return `最近对话：
+${hist}
+
+检索到的社区动态片段：
+${snips || '（无）'}
+
+${interests ? `提问者的兴趣（只用于让措辞更贴人，不得据此编造事实）：${interests}\n` : ''}用户问题：${question}
+
+请输出 JSON：
+{"answer": "回答（一两句 + 要点，[n] 标注出处）", "citations": [{"post_id": "片段里的 id", "quote": "引用的原文片段（30 字内）"}]}`;
+}

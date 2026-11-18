@@ -6,6 +6,7 @@ import { all, get, run, toJson, parseJson } from '../db/index.js';
 import { moderate, generateTags } from '../ai/moderation.js';
 import { loadPersona } from '../ai/persona.js';
 import { extractAndApply } from '../ai/interest-graph.js';
+import { indexPost } from '../ai/embedding.js';
 import { publicProfile } from '../ai/matching.js';
 import { notify } from '../services/notify-service.js';
 import { emitToUser } from '../realtime/index.js';
@@ -104,6 +105,9 @@ router.post(
 
     // 兴趣图谱：动态内容回流到作者的兴趣画像（异步，失败不影响发帖）
     extractAndApply(req.user.id, { source: 'post', sourceId: id, text: content });
+
+    // 社群助手：动态入库后顺带向量化（异步，失败不影响发帖；无 Key 时跳过，检索时现算）
+    indexPost(id, content);
 
     // 自伤类内容：给作者本人一条支持提示，而不是冷冰冰地拦截
     if (check.need_support) {

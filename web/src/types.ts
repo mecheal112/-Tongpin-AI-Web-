@@ -258,6 +258,35 @@ export interface DemoAccount {
   grade?: string | null;
 }
 
+export interface AssistantCitation {
+  post_id: string;
+  quote: string;
+}
+
+export interface AssistantSource {
+  post_id: string;
+  author: string;
+  excerpt: string;
+  ts: number;
+}
+
+export interface AssistantMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  citations?: AssistantCitation[];
+  ts?: number;
+}
+
+export interface AssistantAskResult {
+  ok: boolean;
+  session_id: string;
+  answer: string;
+  citations: AssistantCitation[];
+  sources: AssistantSource[];
+  degraded: boolean;
+  hits: number;
+}
+
 export interface AdminStats {
   users: number;
   personas: number;

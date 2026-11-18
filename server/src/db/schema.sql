@@ -303,3 +303,23 @@ CREATE TABLE IF NOT EXISTS ai_logs (
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_ailogs_created ON ai_logs(created_at DESC);
+
+-- ---------- W2 社群助手 / RAG ----------
+-- 帖子向量：有 Key 存 embedding，无 Key 存 TF-IDF（kind 区分，两空间不混比）
+CREATE TABLE IF NOT EXISTS post_vectors (
+  post_id     TEXT PRIMARY KEY REFERENCES posts(id) ON DELETE CASCADE,
+  embedding   TEXT NOT NULL,              -- JSON 数组
+  kind        TEXT NOT NULL,              -- 'embedding' | 'tfidf'
+  model       TEXT NOT NULL,              -- 'text-embedding-3-small' | 'tfidf-v1'
+  updated_at  INTEGER NOT NULL
+);
+
+-- 助手会话：每用户单活跃会话，messages 为 FIFO 20 条的 JSON
+CREATE TABLE IF NOT EXISTS assistant_sessions (
+  id          TEXT PRIMARY KEY,
+  user_id     TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  messages    TEXT NOT NULL DEFAULT '[]', -- {role, content, citations, ts}
+  created_at  INTEGER NOT NULL,
+  updated_at  INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_asst_user ON assistant_sessions(user_id, updated_at DESC);
